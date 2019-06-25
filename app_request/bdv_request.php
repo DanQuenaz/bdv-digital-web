@@ -14,28 +14,10 @@ if(isset($_POST['OPX_GET_MTR'])){//Checa se existe parametros na requisição
    echo $sv->retornaMotoristas();
 }
 
-//**************REQUISIÇÃO BDVS******************//	
-else if(isset($_POST['OPX_SET_BDV'])){
-	$bdvs = json_decode($_POST['OPX_SET_BDV']);
-	echo $sv->insereBDV($bdvs);
-}
-
-//**************REQUISIÇÃO CHECK LIST******************//	
-else if(isset($_POST['OPX_SET_CKL'])){
-	$_dados = json_decode($_POST['OPX_SET_CKL']);
-	echo $sv->insereCheckList($_dados);
-}
-
-//**************REQUISIÇÃO HORA EXTRA******************//	
-else if(isset($_POST['OPX_SET_HRE'])){
-	$_dados = json_decode($_POST['OPX_SET_HRE']);
-	echo $sv->insereHoraExtra($_dados);
-}
-
-//**************REQUISIÇÃO CUSTOS MOTORISTA******************//	
-else if(isset($_POST['OPX_SET_CSM'])){
-	$_dados = json_decode($_POST['OPX_SET_CSM']);
-	echo $sv->insereCustosMotorista($_dados);
+//**************DOWNLOAD DADOS APP******************//	
+else if(isset($_POST['OPX_SET_3304'])){
+	$_dados = json_decode($_POST['OPX_SET_3304']);
+	echo $sv->insereDadosApp($_dados[0]);
 }
 
 /***************VERIFICAÇÃO SENHA ADMINISTRADOR*************/

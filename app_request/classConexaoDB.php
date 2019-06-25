@@ -26,9 +26,9 @@ class db{
 	private static $dbtype   = "mysql";
 	private static $host     = "localhost";
 	private static $port     = "3306";
-	private static $user     = "ammeletr_root";
-	private static $password = "Mati!¨36";
-	private static $db       = "ammeletr_test";
+	private static $user     = "root";
+	private static $password = "";
+	private static $db       = "base_bdv";
 		
 	/*Metodos que trazem o conteudo da variavel desejada
 	@return   $xxx = conteudo da variavel solicitada*/

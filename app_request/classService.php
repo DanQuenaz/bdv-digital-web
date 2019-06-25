@@ -24,60 +24,69 @@ class service{
         return json_encode($row_s);
     }
 
-    public function insereBDV($bdvs){
-        $check = 1;
-        $this->cn->iniciaTransacao();	
+    public function insereDadosApp($_dados){
+        $this->cn->iniciaTransacao();
         try{
-            for($i=0; $i < count( $bdvs ); $i++){
-                $motoristaNome = $bdvs[$i]->{'motoristaNome'};
-                $motoristaID = $bdvs[$i]->{'motoristaID'};
-                $frota_veiculo = $bdvs[$i]->{'frota_veiculo'};
-                $hora_inicial = $bdvs[$i]->{'hora_inicial'};
-                $hora_final = $bdvs[$i]->{'hora_final'};
-                $km_inicial = $bdvs[$i]->{'km_inicial'};
-                $km_final = $bdvs[$i]->{'km_final'};
-                $km_total = $bdvs[$i]->{'km_total'};
-                $km_calculado = $bdvs[$i]->{'km_calculado'};
-                $km_rodovia = $bdvs[$i]->{'km_rodovia'};
-                $km_cidade = $bdvs[$i]->{'km_cidade'};
-                $velocidade_media = $bdvs[$i]->{'velocidade_media'};
-                $servico = $bdvs[$i]->{'servico'};
-                $reserva = $bdvs[$i]->{'reserva'};
-                $placa_reserva = $bdvs[$i]->{'placa_reserva'};
-                $centro_custo = $bdvs[$i]->{'centro_custo'};
-                $assinaturas = $bdvs[$i]->{'assinaturas'};
-                $rota = $bdvs[$i]->{'rota'};
-
-                $sql = "INSERT INTO `bdv` (`bdvID`, `motoristaNome`, `motoristaID`, `frota_veiculo`, `hora_inicial`, `hora_final`, `km_inicial`, `km_final`, `km_total`, `km_calculado`, `km_rodovia`, `km_cidade`, `velocidade_media`, `servico`, `reserva`, `placa_reserva`, `centro_custo`) VALUES (NULL, :motoristaNome, :motoristaID, :frota_veiculo, :hora_inicial, :hora_final, :km_inicial, :km_final, :km_total, :km_calculado, :km_rodovia, :km_cidade, :velocidade_media, :servico, :reserva, :placa_reserva, :centro_custo)";
-                $parametros = array(':motoristaNome'=>$motoristaNome,
-                                    ':motoristaID'=>$motoristaID,
-                                    ':frota_veiculo'=>$frota_veiculo,
-                                    ':hora_inicial'=>$hora_inicial,
-                                    ':hora_final'=>$hora_final,
-                                    ':km_inicial'=>$km_inicial,
-                                    ':km_final'=>$km_final,
-                                    ':km_total'=>$km_total,
-                                    ':km_calculado'=>$km_calculado,
-                                    ':km_rodovia'=>$km_rodovia,
-                                    ':km_cidade'=>$km_cidade,
-                                    ':velocidade_media'=>$velocidade_media,
-                                    ':servico'=>$servico,
-                                    ':reserva'=>$reserva,
-                                    ':placa_reserva'=>$placa_reserva,
-                                    ':centro_custo'=>$centro_custo
-                                    );
-                $this->cn->executa_sql($sql, $parametros);
-                $this->insereAssinaturas($assinaturas);
-                $this->insereRota($rota);
-            }
+            if(isset($_dados->{'bdv'}))$this->insereBDV($_dados->{'bdv'});
+            if(isset($_dados->{'check_list'}))$this->insereCheckList($_dados->{'check_list'});
+            if(isset($_dados->{'custo_motorista'}))$this->insereCustosMotorista($_dados->{'custo_motorista'});
+            if(isset($_dados->{'hora_extra'}))$this->insereHoraExtra($_dados->{'hora_extra'});
             $this->cn->ConfirmaTransacao();
             $this->cn = null;
             return "1#";
+            
         }catch(PDOException $e){
-            return "0#*".$e->getMessage();
             $this->cn->CancelaTransacao();
             $this->cn = null;
-            exit;
+            return "0#*".$e->getMessage();
+            die; exit; 
+        }
+    }
+
+    public function insereBDV($bdvs){
+        $check = 1;
+        
+        for($i=0; $i < count( $bdvs ); $i++){
+            $motoristaNome = $bdvs[$i]->{'motoristaNome'};
+            $motoristaID = $bdvs[$i]->{'motoristaID'};
+            $frota_veiculo = $bdvs[$i]->{'frota_veiculo'};
+            $hora_inicial = $bdvs[$i]->{'hora_inicial'};
+            $hora_final = $bdvs[$i]->{'hora_final'};
+            $km_inicial = $bdvs[$i]->{'km_inicial'};
+            $km_final = $bdvs[$i]->{'km_final'};
+            $km_total = $bdvs[$i]->{'km_total'};
+            $km_calculado = $bdvs[$i]->{'km_calculado'};
+            $km_rodovia = $bdvs[$i]->{'km_rodovia'};
+            $km_cidade = $bdvs[$i]->{'km_cidade'};
+            $velocidade_media = $bdvs[$i]->{'velocidade_media'};
+            $servico = $bdvs[$i]->{'servico'};
+            $reserva = $bdvs[$i]->{'reserva'};
+            $placa_reserva = $bdvs[$i]->{'placa_reserva'};
+            $centro_custo = $bdvs[$i]->{'centro_custo'};
+            $assinaturas = $bdvs[$i]->{'assinaturas'};
+            $rota = $bdvs[$i]->{'rota'};
+
+            $sql = "INSERT INTO `bdv` (`bdvID`, `motoristaNome`, `motoristaID`, `frota_veiculo`, `hora_inicial`, `hora_final`, `km_inicial`, `km_final`, `km_total`, `km_calculado`, `km_rodovia`, `km_cidade`, `velocidade_media`, `servico`, `reserva`, `placa_reserva`, `centro_custo`) VALUES (NULL, :motoristaNome, :motoristaID, :frota_veiculo, :hora_inicial, :hora_final, :km_inicial, :km_final, :km_total, :km_calculado, :km_rodovia, :km_cidade, :velocidade_media, :servico, :reserva, :placa_reserva, :centro_custo)";
+            $parametros = array(':motoristaNome'=>$motoristaNome,
+                                ':motoristaID'=>$motoristaID,
+                                ':frota_veiculo'=>$frota_veiculo,
+                                ':hora_inicial'=>$hora_inicial,
+                                ':hora_final'=>$hora_final,
+                                ':km_inicial'=>$km_inicial,
+                                ':km_final'=>$km_final,
+                                ':km_total'=>$km_total,
+                                ':km_calculado'=>$km_calculado,
+                                ':km_rodovia'=>$km_rodovia,
+                                ':km_cidade'=>$km_cidade,
+                                ':velocidade_media'=>$velocidade_media,
+                                ':servico'=>$servico,
+                                ':reserva'=>$reserva,
+                                ':placa_reserva'=>$placa_reserva,
+                                ':centro_custo'=>$centro_custo
+                                );
+            $this->cn->executa_sql($sql, $parametros);
+            $this->insereAssinaturas($assinaturas);
+            $this->insereRota($rota);
         }
     }
 
@@ -183,156 +192,123 @@ class service{
 
     public function insereCheckList($_dados){
         $check = 1;
-        $this->cn->iniciaTransacao();	
-        try{
-            for($i=0; $i < count( $_dados ); $i++){
-                $veiculoCartela = $_dados[$i]->{'veiculoCartela'};
-                $motoristaNome = $_dados[$i]->{'motoristaNome'};
-                $motoristaMatricula = $_dados[$i]->{'motoristaMatricula'};
-                $dia_hora = $_dados[$i]->{'dia_hora'};
-                $item1 = $_dados[$i]->{'item1'};
-                $item2 = $_dados[$i]->{'item2'};
-                $item3 = $_dados[$i]->{'item3'};
-                $item4 = $_dados[$i]->{'item4'};
-                $item5 = $_dados[$i]->{'item5'};
-                $item6 = $_dados[$i]->{'item6'};
-                $item7 = $_dados[$i]->{'item7'};
-                $item8 = $_dados[$i]->{'item8'};
-                $item9 = $_dados[$i]->{'item9'};
-                $item10 = $_dados[$i]->{'item10'};
-                $item11 = $_dados[$i]->{'item11'};
-                $item12 = $_dados[$i]->{'item12'};
-                $item13 = $_dados[$i]->{'item13'};
-                $item14 = $_dados[$i]->{'item14'};
-                $item15 = $_dados[$i]->{'item15'};
-                $item16 = $_dados[$i]->{'item16'};
-                $item17 = $_dados[$i]->{'item17'};
-                $item18 = $_dados[$i]->{'item18'};
-                $item19 = $_dados[$i]->{'item19'};
-                $item20 = $_dados[$i]->{'item20'};
-                $item21 = $_dados[$i]->{'item21'};
-                $item22 = $_dados[$i]->{'item22'};
-                $item23 = $_dados[$i]->{'item23'};
-                $item24 = $_dados[$i]->{'item24'};
-                $item25 = $_dados[$i]->{'item25'};
-                $item26 = $_dados[$i]->{'item26'};
-                $item27 = $_dados[$i]->{'item27'};
-                $item28 = $_dados[$i]->{'item28'};
-                $item29 = $_dados[$i]->{'item29'};
-                $observacoes = $_dados[$i]->{'observacoes'};
-                $sql = "INSERT INTO `checkin_frota` (`checkinID`,`veiculoCartela`, `motorista_nome`, `motorista_matricula`,`dia_hora`, `item1`, `item2`, `item3`, `item4`, `item5`, `item6`, `item7`, `item8`, `item9`, `item10`, `item11`, `item12`, `item13`, `item14`, `item15`, `item16`, `item17`, `item18`, `item19`, `item20`, `item21`, `item22`, `item23`, `item24`, `item25`, `item26`, `item27`, `item28`, `item29`, `observacoes`) VALUES (NULL, :veiculoCartela, :motoristaNome, :motoristaMatricula, :dia_hora, :item1, :item2, :item3, :item4, :item5, :item6, :item7, :item8, :item9, :item10, :item11, :item12, :item13, :item14, :item15, :item16, :item17, :item18, :item19, :item20, :item21, :item22, :item23, :item24, :item25, :item26, :item27, :item28, :item29, :observacoes)";
-                $parametros = array(':veiculoCartela'=>$veiculoCartela,
-                                    ':motoristaNome'=>$motoristaNome,
-                                    ':motoristaMatricula'=>$motoristaMatricula,
-                                    ':dia_hora'=>$dia_hora,
-                                    ':item1'=>$item1,
-                                    ':item2'=>$item2,
-                                    ':item3'=>$item3,
-                                    ':item4'=>$item4,
-                                    ':item5'=>$item5,
-                                    ':item6'=>$item6,
-                                    ':item7'=>$item7,
-                                    ':item8'=>$item8,
-                                    ':item9'=>$item9,
-                                    ':item10'=>$item10,
-                                    ':item11'=>$item11,
-                                    ':item12'=>$item12,
-                                    ':item13'=>$item13,
-                                    ':item14'=>$item14,
-                                    ':item15'=>$item15,
-                                    ':item16'=>$item16,
-                                    ':item17'=>$item17,
-                                    ':item18'=>$item18,
-                                    ':item19'=>$item19,
-                                    ':item20'=>$item20,
-                                    ':item21'=>$item21,
-                                    ':item22'=>$item22,
-                                    ':item23'=>$item23,
-                                    ':item24'=>$item24,
-                                    ':item25'=>$item25,
-                                    ':item26'=>$item26,
-                                    ':item27'=>$item27,
-                                    ':item28'=>$item28,
-                                    ':item29'=>$item29,
-                                    ':observacoes'=>$observacoes
-                                    );
-                $this->cn->executa_sql($sql, $parametros);
-            }          
-            $this->cn->ConfirmaTransacao();
-            $this->cn = null;
-            return "1#";
-        }catch(PDOException $e){
-            return "0#*".$e->getMessage();
-            $this->cn->CancelaTransacao();
-            $this->cn = null;
-            exit;
-        } 
+        for($i=0; $i < count( $_dados ); $i++){
+            $veiculoCartela = $_dados[$i]->{'veiculoCartela'};
+            $motoristaNome = $_dados[$i]->{'motoristaNome'};
+            $motoristaMatricula = $_dados[$i]->{'motoristaMatricula'};
+            $dia_hora = $_dados[$i]->{'dia_hora'};
+            $item1 = $_dados[$i]->{'item1'};
+            $item2 = $_dados[$i]->{'item2'};
+            $item3 = $_dados[$i]->{'item3'};
+            $item4 = $_dados[$i]->{'item4'};
+            $item5 = $_dados[$i]->{'item5'};
+            $item6 = $_dados[$i]->{'item6'};
+            $item7 = $_dados[$i]->{'item7'};
+            $item8 = $_dados[$i]->{'item8'};
+            $item9 = $_dados[$i]->{'item9'};
+            $item10 = $_dados[$i]->{'item10'};
+            $item11 = $_dados[$i]->{'item11'};
+            $item12 = $_dados[$i]->{'item12'};
+            $item13 = $_dados[$i]->{'item13'};
+            $item14 = $_dados[$i]->{'item14'};
+            $item15 = $_dados[$i]->{'item15'};
+            $item16 = $_dados[$i]->{'item16'};
+            $item17 = $_dados[$i]->{'item17'};
+            $item18 = $_dados[$i]->{'item18'};
+            $item19 = $_dados[$i]->{'item19'};
+            $item20 = $_dados[$i]->{'item20'};
+            $item21 = $_dados[$i]->{'item21'};
+            $item22 = $_dados[$i]->{'item22'};
+            $item23 = $_dados[$i]->{'item23'};
+            $item24 = $_dados[$i]->{'item24'};
+            $item25 = $_dados[$i]->{'item25'};
+            $item26 = $_dados[$i]->{'item26'};
+            $item27 = $_dados[$i]->{'item27'};
+            $item28 = $_dados[$i]->{'item28'};
+            $item29 = $_dados[$i]->{'item29'};
+            $observacoes = $_dados[$i]->{'observacoes'};
+            $sql = "INSERT INTO `checkin_frota` (`checkinID`,`veiculoCartela`, `motorista_nome`, `motorista_matricula`,`dia_hora`, `item1`, `item2`, `item3`, `item4`, `item5`, `item6`, `item7`, `item8`, `item9`, `item10`, `item11`, `item12`, `item13`, `item14`, `item15`, `item16`, `item17`, `item18`, `item19`, `item20`, `item21`, `item22`, `item23`, `item24`, `item25`, `item26`, `item27`, `item28`, `item29`, `observacoes`) VALUES (NULL, :veiculoCartela, :motoristaNome, :motoristaMatricula, :dia_hora, :item1, :item2, :item3, :item4, :item5, :item6, :item7, :item8, :item9, :item10, :item11, :item12, :item13, :item14, :item15, :item16, :item17, :item18, :item19, :item20, :item21, :item22, :item23, :item24, :item25, :item26, :item27, :item28, :item29, :observacoes)";
+            $parametros = array(':veiculoCartela'=>$veiculoCartela,
+                                ':motoristaNome'=>$motoristaNome,
+                                ':motoristaMatricula'=>$motoristaMatricula,
+                                ':dia_hora'=>$dia_hora,
+                                ':item1'=>$item1,
+                                ':item2'=>$item2,
+                                ':item3'=>$item3,
+                                ':item4'=>$item4,
+                                ':item5'=>$item5,
+                                ':item6'=>$item6,
+                                ':item7'=>$item7,
+                                ':item8'=>$item8,
+                                ':item9'=>$item9,
+                                ':item10'=>$item10,
+                                ':item11'=>$item11,
+                                ':item12'=>$item12,
+                                ':item13'=>$item13,
+                                ':item14'=>$item14,
+                                ':item15'=>$item15,
+                                ':item16'=>$item16,
+                                ':item17'=>$item17,
+                                ':item18'=>$item18,
+                                ':item19'=>$item19,
+                                ':item20'=>$item20,
+                                ':item21'=>$item21,
+                                ':item22'=>$item22,
+                                ':item23'=>$item23,
+                                ':item24'=>$item24,
+                                ':item25'=>$item25,
+                                ':item26'=>$item26,
+                                ':item27'=>$item27,
+                                ':item28'=>$item28,
+                                ':item29'=>$item29,
+                                ':observacoes'=>$observacoes
+                                );
+            $this->cn->executa_sql($sql, $parametros);
+        }          
     }
 
     public function insereHoraExtra($_dados){
         $check = 1;
-        $this->cn->iniciaTransacao();	
-        try{
-            for($i=0; $i < count( $_dados ); $i++){
-                $motorista_matricula = $_dados[$i]->{'motorista_matricula'};
-                $hora_login = $_dados[$i]->{'hora_login'};
-                $hora_logout = $_dados[$i]->{'hora_logout'};
-                $hora_primeira_rota = $_dados[$i]->{'hora_primeira_rota'};
-                $hora_ultima_rota = $_dados[$i]->{'hora_ultima_rota'};
-                $total_hora_logado = $_dados[$i]->{'total_hora_logado'};
-                $total_hora_rota = $_dados[$i]->{'total_hora_rota'};
-                $dia_semana = $_dados[$i]->{'dia_semana'};
+        for($i=0; $i < count( $_dados ); $i++){
+            $motorista_matricula = $_dados[$i]->{'motorista_matricula'};
+            $hora_login = $_dados[$i]->{'hora_login'};
+            $hora_logout = $_dados[$i]->{'hora_logout'};
+            $hora_primeira_rota = $_dados[$i]->{'hora_primeira_rota'};
+            $hora_ultima_rota = $_dados[$i]->{'hora_ultima_rota'};
+            $total_hora_logado = $_dados[$i]->{'total_hora_logado'};
+            $total_hora_rota = $_dados[$i]->{'total_hora_rota'};
+            $dia_semana = $_dados[$i]->{'dia_semana'};
 
-                $sql = "INSERT INTO `hora_extra` (`heID`,`motorista_matricula`, `hora_login`, `hora_logout`,`hora_primeira_rota`, `hora_ultima_rota`, `total_hora_logado`, `total_hora_rota`, `dia_semana`) VALUES (NULL, :motorista_matricula, :hora_login, :hora_logout, :hora_primeira_rota, :hora_ultima_rota, :total_hora_logado, :total_hora_rota, :dia_semana)";
-                $parametros = array(':motorista_matricula'=>$motorista_matricula,
-                                    ':hora_login'=>$hora_login,
-                                    ':hora_logout'=>$hora_logout,
-                                    ':hora_primeira_rota'=>$hora_primeira_rota,
-                                    ':hora_ultima_rota'=>$hora_ultima_rota,
-                                    ':total_hora_logado'=>$total_hora_logado,
-                                    ':total_hora_rota'=>$total_hora_rota,
-                                    ':dia_semana'=>$dia_semana
-                                    );
-                $this->cn->executa_sql($sql, $parametros);
-            }         
-            $this->cn->ConfirmaTransacao();
-            $this->cn = null;
-            return "1#";
-        }catch(PDOException $e){
-            return "0#*".$e->getMessage();
-            $this->cn->CancelaTransacao();
-            $this->cn = null;
-            exit;
-        } 
+            $sql = "INSERT INTO `hora_extra` (`heID`,`motorista_matricula`, `hora_login`, `hora_logout`,`hora_primeira_rota`, `hora_ultima_rota`, `total_hora_logado`, `total_hora_rota`, `dia_semana`) VALUES (NULL, :motorista_matricula, :hora_login, :hora_logout, :hora_primeira_rota, :hora_ultima_rota, :total_hora_logado, :total_hora_rota, :dia_semana)";
+            $parametros = array(':motorista_matricula'=>$motorista_matricula,
+                                ':hora_login'=>$hora_login,
+                                ':hora_logout'=>$hora_logout,
+                                ':hora_primeira_rota'=>$hora_primeira_rota,
+                                ':hora_ultima_rota'=>$hora_ultima_rota,
+                                ':total_hora_logado'=>$total_hora_logado,
+                                ':total_hora_rota'=>$total_hora_rota,
+                                ':dia_semana'=>$dia_semana
+                                );
+            $this->cn->executa_sql($sql, $parametros);
+        }
     }
 
     public function insereCustosMotorista($_dados){
         $check = 1;
-        $this->cn->iniciaTransacao();	
-        try{
-            for($i=0; $i < count( $_dados ); $i++){
-                $descricao = $_dados[$i]->{'descricao'};
-                $data_custo = $_dados[$i]->{'data_custo'};
-                $valor = $_dados[$i]->{'valor'};
-                $motorista_matricula = $_dados[$i]->{'motorista_matricula'};
+        for($i=0; $i < count( $_dados ); $i++){
+            $descricao = $_dados[$i]->{'descricao'};
+            $data_custo = $_dados[$i]->{'data_custo'};
+            $valor = $_dados[$i]->{'valor'};
+            $motorista_matricula = $_dados[$i]->{'motorista_matricula'};
 
-                $sql = "INSERT INTO `custos_motorista` (`cmID`, `descricao`, `data_custo`, `valor`, `motorista_matricula`) VALUES (NULL, :descricao, :data_custo, :valor, :motorista_matricula)";
-                $parametros = array(':descricao'=>$descricao,
-                                    ':data_custo'=>$data_custo,
-                                    ':valor'=>$valor,
-                                    ':motorista_matricula'=>$motorista_matricula
-                                    );
-                $this->cn->executa_sql($sql, $parametros);
-            }
-            $this->cn->ConfirmaTransacao();
-            $this->cn = null;
-            return "1#";
-        }catch(PDOException $e){
-            return "0#*".$e->getMessage();
-            $this->cn->CancelaTransacao();
-            $this->cn = null;
-            exit;
-        } 
+            $sql = "INSERT INTO `custos_motorista` (`cmID`, `descricao`, `data_custo`, `valor`, `motorista_matricula`) VALUES (NULL, :descricao, :data_custo, :valor, :motorista_matricula)";
+            $parametros = array(':descricao'=>$descricao,
+                                ':data_custo'=>$data_custo,
+                                ':valor'=>$valor,
+                                ':motorista_matricula'=>$motorista_matricula
+                                );
+            $this->cn->executa_sql($sql, $parametros);
+        }
     }
 }
 
